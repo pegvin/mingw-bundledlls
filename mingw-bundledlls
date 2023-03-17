@@ -74,8 +74,7 @@ def main():
 	)
 	parser.add_argument(
 		"--search-dir",
-		action="store_const",
-		const="/%s/bin/" % os.environ.get("MSYSTEM", "mingw64")
+		default=f'/{os.environ.get("MSYSTEM", "mingw64")}/bin/',
 		help="Set the directories to search in, splitted by a colon"
 	)
 	parser.add_argument(
@@ -88,7 +87,7 @@ def main():
 	if args.upx and not args.copy:
 		raise RuntimeError("Can't run UPX if --copy hasn't been provided.")
 
-	searchDir = [path for path in args.searchDir.split(":") if path]
+	searchDir = [path for path in args.search_dir.split(":") if path]
 	allDLLs = set(GetExecutableDLLs(args.executable, searchDir, set()))
 	allDLLs.remove(args.executable)
 
