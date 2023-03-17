@@ -74,7 +74,7 @@ def main():
 	)
 	parser.add_argument(
 		"--search-dir",
-		default=f'/{os.environ.get("MSYSTEM", "mingw64")}/bin/',
+		default=f'/{os.environ.get("MSYSTEM", "mingw64").lower()}/bin/',
 		help="Set the directories to search in, splitted by a colon"
 	)
 	parser.add_argument(
