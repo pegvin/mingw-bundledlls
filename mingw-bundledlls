@@ -88,7 +88,7 @@ def main():
 		raise RuntimeError("Can't run UPX if --copy hasn't been provided.")
 
 	searchDir = [path for path in args.search_dir.split(":") if path]
-	print("Search directories: %s" % args.search_dir)
+	print("Search directories: %s" % searchDir)
 	allDLLs = set(GetExecutableDLLs(args.executable, searchDir, set()))
 	allDLLs.remove(args.executable)
 
