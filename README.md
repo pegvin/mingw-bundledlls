@@ -1,6 +1,5 @@
 # bundledll.js
-
-[bundledll.js](./bundledll.js) is a JS script based on [mingw-bundledlls](https://github.com/mpreisler/mingw-bundledlls) python script used for copying all the DLLs require by a .exe or a .dll file.
+Get & Optionally Copy All The DLLs Required By A .exe or a .dll File
 
 ## Features
  - find all dependencies of an EXE or DLL file (recursively)
