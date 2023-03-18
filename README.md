@@ -1,30 +1,33 @@
-# mingw-bundledlls
-A convenient Python3 script that copies all dependency DLLs next to the executable. Suitable for creating a ready-to-go application bundle for Windows. The script assumes Fedora 21 mingw32 install paths, but that is easy to change.
+# bundledll.js
+
+[bundledll.js](./bundledll.js) is a JS script based on [mingw-bundledlls](https://github.com/mpreisler/mingw-bundledlls) python script used for copying all the DLLs require by a .exe or a .dll file.
 
 ## Features
  - find all dependencies of an EXE or DLL file (recursively)
  - copy all dependencies next to the EXE or DLL
- - (optional) run UPX on all the copied dependencies and the EXE
+ - optionally compress all the copied dependencies using UPX
 
 ## Requirements
- - python3 or python2
- - objdump in $PATH
- - (optional) upx in $PATH
+ - nodejs
+ - objdump in $PATH (Provided by [binutils](https://packages.msys2.org/package/binutils) on msys2)
+ - (optional) upx in $PATH (Provided by [upx](https://packages.msys2.org/package/upx) on msys2)
 
 ## Usage
 
 ```
-usage: mingw-bundledlls [-h] [--copy] [--search-dir SEARCH_DIR] [--upx] executable
+Usage: bundledll.js [-h] [--copy] [--upx] [--search-dir SEARCH_DIR] executable
 
 positional arguments:
-  executable            EXE or DLL file that you need to bundle dependencies for
+  executable               EXE or DLL file that you need to bundle dependencies for
 
 options:
-  -h, --help               show this help message and exit
-  --copy                   In addition to printing out the dependencies, also copy them next to the executable
-  --search-dir SEARCH_DIR  Set the directories to search in, splitted by a colons
-  --upx                    Only valid if --copy is provided. Run UPX on all the DLLs and EXE.
+  -h, --help               Show this help message and exit
+  --copy                   Copy the DLLs next to the executable
+  --upx                    Run UPX on all the DLLs and EXE (requires --copy).
 ```
+
+## Paths
+the scripts searches all the directories in `$PATH` env variable, which can be modified to add more search directories
 
 ---
 # Thanks
