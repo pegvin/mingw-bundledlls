@@ -11,8 +11,8 @@ positional arguments:
 options:
   -h, --help               Show this help message and exit
   --copy                   Copy the DLLs next to the executable
-  --upx                    Run UPX on all the DLLs and EXE (requires --copy).
-  --search-dir SEARCH_DIR  Set the directories to search in, splitted by a colons`;
+  --upx                    Run UPX on all the DLLs and EXE (requires --copy).`;
+//  --search-dir SEARCH_DIR  Set the directories to search in, splitted by a colons`;
 
 // This blacklist may need extending
 const blacklist = [
@@ -31,7 +31,7 @@ const blacklist = [
 var OPTIONS = {
 	copy: false,
 	upx: false,
-	searchDir: [`/${process.env.MSYSTEM ? process.env.MSYSTEM.toLowerCase() : 'mingw64'}/bin/`],
+	searchDir: process.env.PATH.split(path.delimiter),
 	executable: null
 }
 
@@ -51,15 +51,15 @@ var OPTIONS = {
 			OPTIONS.copy = true;
 		} else if (arg == "--upx") {
 			OPTIONS.upx = true;
-		} else if (arg == "--search-dir" && argv[i + 1]) {
-			OPTIONS.searchDir = argv[i + 1].trim().split(':');
-			OPTIONS.searchDir.forEach(function (item, i) {
-				OPTIONS.searchDir[i] = path.normalize(item).split(path.sep).join(path.posix.sep);
-				OPTIONS.searchDir.forEach(function(dir, i) {
-					OPTIONS.searchDir[i] = execSync(`cygpath -m ${dir}`, { stdio: 'pipe' }).toString().trim();
-				});
-			});
-			i++;
+		// } else if (arg == "--search-dir" && argv[i + 1]) {
+		// 	OPTIONS.searchDir = argv[i + 1].trim().split(':');
+		// 	OPTIONS.searchDir.forEach(function (item, i) {
+		// 		OPTIONS.searchDir[i] = path.normalize(item).split(path.sep).join(path.posix.sep);
+		// 		OPTIONS.searchDir.forEach(function(dir, i) {
+		// 			OPTIONS.searchDir[i] = execSync(`cygpath -m ${dir}`, { stdio: 'pipe' }).toString().trim();
+		// 		});
+		// 	});
+		// 	i++;
 		} else {
 			OPTIONS.executable = path.normalize(argv[i]);
 		}
