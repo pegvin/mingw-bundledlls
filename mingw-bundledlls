@@ -24,7 +24,7 @@ def doesExist(path):
 	try:
 		os.stat(path)
 	except OSError as e:
-		print("%s does not exist. %s)" % (path, e))
+		print("%s does not exist. %s\n" % (path, e))
 		return False
 	return True
 
