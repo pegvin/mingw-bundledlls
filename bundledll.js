@@ -56,7 +56,7 @@ var OPTIONS = {
 			OPTIONS.searchDir.forEach(function (item, i) {
 				OPTIONS.searchDir[i] = path.normalize(item).split(path.sep).join(path.posix.sep);
 				OPTIONS.searchDir.forEach(function(dir, i) {
-					OPTIONS.searchDir[i] = execSync(`cygpath -m ${dir}`).toString().trim();
+					OPTIONS.searchDir[i] = execSync(`cygpath -m ${dir}`, { stdio: 'pipe' }).toString().trim();
 				});
 			});
 			i++;
@@ -70,6 +70,13 @@ var OPTIONS = {
 	} else if (OPTIONS.upx && !OPTIONS.copy) {
 		console.log("Cannot use UPX compression if --copy isn't enabled!\n\n", HELP_MESSAGE);
 		process.exit(1);
+	} else if (OPTIONS.upx) {
+		try {
+			execSync(`upx --version`, { stdio: 'pipe' });
+		} catch (e) {
+			console.log("UPX compression disabled, failed to get UPX version!");
+			OPTIONS.upx = false;
+		}
 	}
 };
 
@@ -87,7 +94,6 @@ function FindDLLPath(filename, searchDirs) {
 		let directory = searchDirs[i];
 		let dllPath = path.join(directory, filename);
 		let dllPathLower = path.join(directory, filename.toLowerCase());
-		// console.log(`Looking For: "${filename}"`);
 		if (fs.existsSync(dllPath)) {
 			console.log(`Found: ${dllPath}`);
 			return dllPath;
@@ -105,7 +111,7 @@ function GetExecutableDLLs(executable, searchDirs, foundDLLs = []) {
 	let ret = [executable];
 	let tmpFileName = genTmpFileName('txt');
 	fs.writeFileSync(tmpFileName, '');
-	execSync(`objdump -p ${executable} > ${tmpFileName}`);
+	execSync(`objdump -p ${executable} > ${tmpFileName}`, { stdio: 'pipe' });
 	let output = fs.readFileSync(tmpFileName);
 	fs.rmSync(tmpFileName, { force: true });
 	output = output?.toString()?.split("\n");
@@ -137,7 +143,11 @@ if (foundDLLs.length > 0) {
 
 	if (OPTIONS.copy) {
 		foundDLLs.forEach(function(dll) {
-			fs.copyFileSync(dll, path.resolve(path.basename(dll)));
+			let destPath = path.resolve(path.basename(dll));
+			fs.copyFileSync(dll, destPath);
+			if (OPTIONS.upx) {
+				try { execSync(`upx ${destPath}`, { stdio: 'pipe' }); } catch (e) {}
+			}
 		});
 	}
 }
