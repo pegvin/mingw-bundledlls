@@ -25,6 +25,7 @@ def FindDLLPath(filename, path_prefixes):
 	for path_prefix in path_prefixes:
 		path = os.path.join(path_prefix, filename)
 		path_low = os.path.join(path_prefix, filename.lower())
+		print("Looking For: %s or %s" % (path, path_low))
 		if os.path.exists(path):
 			print("Found: %s" % path)
 			return path
