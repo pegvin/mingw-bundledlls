@@ -25,12 +25,12 @@ def FindDLLPath(filename, path_prefixes):
 	for path_prefix in path_prefixes:
 		path = os.path.join(path_prefix, filename)
 		path_low = os.path.join(path_prefix, filename.lower())
-		print("Finding: %s" % path_low)
 		if os.path.exists(path):
+			print("Found: %s" % path)
 			return path
 		if os.path.exists(path_low):
+			print("Found: %s" % path_low)
 			return path_low
-
 	else:
 		raise RuntimeError(
 			"Can't find " + filename + ". If it is an inbuilt Windows DLL, "
