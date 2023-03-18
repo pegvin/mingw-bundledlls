@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
-import os.path
+import os
 import argparse
 import shutil
 
@@ -20,24 +20,27 @@ blacklist = [
 	"d3d11.dll", "dxgi.dll", "dwrite.dll"
 ]
 
+def doesExist(path):
+	try:
+		os.stat(path)
+	except OSError as e:
+		print("%s does not exist. %s)" % (path, e))
+		return False
+	return True
 
 def FindDLLPath(filename, path_prefixes):
 	for path_prefix in path_prefixes:
 		path = os.path.join(path_prefix, filename)
 		path_low = os.path.join(path_prefix, filename.lower())
 		print("Looking For: %s or %s" % (path, path_low))
-		if os.path.exists(path):
+		if doesExist(path):
 			print("Found: %s" % path)
 			return path
-		if os.path.exists(path_low):
+		if doesExist(path_low):
 			print("Found: %s" % path_low)
 			return path_low
 	else:
-		raise RuntimeError(
-			"Can't find " + filename + ". If it is an inbuilt Windows DLL, "
-			"please add it to the blacklist variable in the script and send "
-			"a pull request!"
-		)
+		print("Can't find %s, If it is an inbuilt Windows DLL, please add it to the blacklist variable in the script and send a pull request!" % filename)
 
 
 def GetExecutableDLLs(path, path_prefixes, seen):
