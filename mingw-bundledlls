@@ -20,6 +20,11 @@ blacklist = [
 	"d3d11.dll", "dxgi.dll", "dwrite.dll"
 ]
 
+def normalizePath(path):
+	if path:
+		path = path.replace('\\', os.path.sep).replace('\\\\', os.path.sep).replace('/', os.path.sep)
+	return path
+
 def doesExist(path):
 	try:
 		os.stat(path)
@@ -30,8 +35,8 @@ def doesExist(path):
 
 def FindDLLPath(filename, path_prefixes):
 	for path_prefix in path_prefixes:
-		path = os.path.join(path_prefix, filename)
-		path_low = os.path.join(path_prefix, filename.lower())
+		path = os.path.abspath(os.path.join(path_prefix, filename))
+		path_low = os.path.abspath(os.path.join(path_prefix, filename.lower()))
 		if doesExist(path):
 			print("Found: %s" % path)
 			return path
@@ -96,7 +101,7 @@ def main():
 	if args.upx and not args.copy:
 		raise RuntimeError("Can't run UPX if --copy hasn't been provided.")
 
-	searchDir = [path for path in args.search_dir.split(":") if path]
+	searchDir = [os.path.abspath(normalizePath(path)) for path in args.search_dir.split(":") if path]
 	print("Search directories: %s" % searchDir)
 	allDLLs = set(GetExecutableDLLs(args.executable, searchDir, set()))
 	allDLLs.remove(args.executable)
